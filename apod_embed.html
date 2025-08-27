@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NASA Astronomy Picture of the Day</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    img, iframe {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+    }
+    .content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h1>NASA Astronomy Picture of the Day</h1>
+    <div id="apod"></div>
+  </div>
+
+  <script>
+    const apiKey = "DEMO_KEY"; // Replace with your own NASA API key if needed
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById("apod");
+        container.innerHTML = `
+          <h2>${data.title}</h2>
+          ${data.media_type === "image" ? 
+            `<img src="${data.url}" alt="${data.title}">` : 
+            `<iframe src="${data.url}" frameborder="0" allowfullscreen></iframe>`}
+          <p>${data.explanation}</p>
+          <p><a href="${data.hdurl || data.url}" target="_blank">View Full Image</a></p>
+        `;
+      })
+      .catch(error => {
+        document.getElementById("apod").innerHTML = "<p>Failed to load APOD.</p>";
+        console.error("Error fetching APOD:", error);
+      });
+  </script>
+</body>
+</html>
