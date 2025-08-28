@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>NASA Astronomy Picture of the Day</title>
-<style>
+  <meta charset="UTF-8">
+  <title>NASA Astronomy Picture of the Day</title>
+  <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -50,9 +49,10 @@
   </style>
 </head>
 <body>
-<h1><a href="https://apod.nasa.gov/apod/astropix.html" target="_blank">NASA Astronomy Picture of the Day</a></h1>
-<div class="container" id="apod-container"></div>
-<script>
+  <h1><a href="https://apod.nasa.gov/apod/astropix.html" target="_blank">NASA Astronomy Picture of the Day</a></h1>
+  <div class="container" id="apod-container"></div>
+
+  <script>
     const apiKey = "300oMLa5BM9iFugCw8lrONggZcRx1shvwbAV2pSV";
     const container = document.getElementById("apod-container");
 
@@ -90,70 +90,6 @@
           container.appendChild(errorDiv);
         });
     });
-
-function formatDate(dateStr) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateStr).toLocaleDateString('en-US', options);
-}
-
-function truncateText(text, wordLimit) {
-  const words = text.split(" ");
-  if (words.length <= wordLimit) return text;
-  return words.slice(0, wordLimit).join(" ") + " <a href='#' class='read-more'>... read more</a>";
-}
-
-function createAPODCard(data, date, isToday) {
-  const card = document.createElement("div");
-  card.className = "apod-card";
-  const readableDate = formatDate(date);
-  const explanation = truncateText(data.explanation, 15);
-  const fullText = data.explanation;
-
-  const link = document.createElement("a");
-  link.href = isToday ? "https://apod.nasa.gov/apod/astropix.html" : `https://apod.nasa.gov/apod/ap${date.replace(/-/g, "").slice(2)}.html`;
-  link.target = "_blank";
-
-  const media = data.media_type === "image"
-    ? `<img src="${data.url}" alt="${data.title}">`
-    : `<iframe src="${data.url}" frameborder="0" allowfullscreen></iframe>`;
-
-  link.innerHTML = media;
-
-  card.innerHTML = `
-    <h2>${data.title}</h2>
-    <p><strong>${readableDate}</strong></p>
-  `;
-  card.appendChild(link);
-
-  const explanationPara = document.createElement("p");
-  explanationPara.innerHTML = explanation;
-  explanationPara.setAttribute("data-full", fullText);
-  card.appendChild(explanationPara);
-
-  container.appendChild(card);
-}
-
-function fetchAPOD(date, isToday) {
-  const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`;
-  fetch(url)
-    .then(response => response.json())
-    .then(data => createAPODCard(data, date, isToday))
-    .catch(error => {
-      console.error("Error fetching APOD:", error);
-      const errorMsg = document.createElement("p");
-      errorMsg.textContent = "Failed to load APOD for " + date;
-      container.appendChild(errorMsg);
-    });
-}
-
-dates.forEach((date, index) => fetchAPOD(date, index === 0));
-
-document.addEventListener("click", function(event) {
-  if (event.target.classList.contains("read-more")) {
-    event.preventDefault();
-    const para = event.target.parentElement;
-    para.innerHTML = para.getAttribute("data-full");
-  }
-});
-</script></body>
+  </script>
+</body>
 </html>
