@@ -1,80 +1,69 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NASA Astronomy Picture of the Day</title>
+  <title>NASA APOD - Latest 3 Days</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
       background-color: #f4f4f4;
-    }
-    img, iframe {
-      max-width: 100%;
-      height: auto;
-      margin-top: 20px;
-    }
-    .content {
-      background: white;
+      margin: 0;
       padding: 20px;
+    }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .apod {
+      background: white;
+      padding: 15px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 800px;
-      margin: auto;
+      flex: 1;
+      max-width: 32%;
     }
-    input[type="date"] {
-      padding: 8px;
-      font-size: 16px;
-      margin-top: 10px;
+    .apod img, .apod iframe {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .apod h2 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .apod p {
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
-  <div class="content">
-    <h1>NASA Astronomy Picture of the Day</h1>
-    <label for="apod-date">Choose a date:</label>
-    <input type="date" id="apod-date" max="">
-    <div id="apod"></div>
-  </div>
+  <h1>NASA Astronomy Picture of the Day</h1>
+  <div class="container" id="apod-container"></div>
 
   <script>
-    const apiKey = "DEMO_KEY"; // Replace with your own NASA API key if needed
-    const dateInput = document.getElementById("apod-date");
-    const apodContainer = document.getElementById("apod");
+    const container = document.getElementById("apod-container");
+    const dates = ['2025-08-28', '2025-08-27', '2025-08-26'];
+    const apiKey = "300oMLa5BM9iFugCw8lrONggZcRx1shvwbAV2pSV";
 
-    // Set max date to today
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.max = today;
-    dateInput.value = today;
-
-    function fetchAPOD(date) {
-      const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`;
-      fetch(url)
+    dates.forEach(date => {
+      fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`)
         .then(response => response.json())
         .then(data => {
-          apodContainer.innerHTML = `
+          const div = document.createElement("div");
+          div.className = "apod";
+          div.innerHTML = `
             <h2>${data.title}</h2>
             ${data.media_type === "image" ? 
               `<img src="${data.url}" alt="${data.title}">` : 
               `<iframe src="${data.url}" frameborder="0" allowfullscreen></iframe>`}
             <p>${data.explanation}</p>
-            <p><a href="${data.hdurl || data.url}" target="_blank">View Full Image</a></p>
           `;
+          container.appendChild(div);
         })
         .catch(error => {
-          apodContainer.innerHTML = "<p>Failed to load APOD.</p>";
           console.error("Error fetching APOD:", error);
         });
-    }
-
-    // Initial fetch for today's APOD
-    fetchAPOD(today);
-
-    // Fetch APOD for selected date
-    dateInput.addEventListener("change", () => {
-      fetchAPOD(dateInput.value);
     });
   </script>
 </body>
