@@ -2,76 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NASA APOD - Last 3 Days</title>
+  <title>NASA Astronomy Picture of the Day</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
       text-align: center;
+      padding: 20px;
+      background-color: #f4f4f4;
     }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
+    img, iframe {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
     }
-    .apod-card {
+    .content {
       background: white;
+      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      padding: 15px;
-      width: 30%;
-      box-sizing: border-box;
+      max-width: 800px;
+      margin: auto;
     }
-    .apod-card img, .apod-card iframe {
-      max-width: 100%;
-      border-radius: 4px;
-    }
-    .apod-card h2 {
-      font-size: 1.1em;
-      margin: 10px 0;
-    }
-    .apod-card p {
-      font-size: 0.9em;
-      text-align: justify;
-    }
-    @media (max-width: 900px) {
-      .apod-card {
-        width: 45%;
-      }
-    }
-    @media (max-width: 600px) {
-      .apod-card {
-        width: 100%;
-      }
+    input[type="date"] {
+      padding: 5px;
+      font-size: 16px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>NASA Astronomy Picture of the Day</h1>
-  <div class="container" id="apod-container"></div>
+  <div class="content">
+    <h1>NASA Astronomy Picture of the Day</h1>
+    <label for="apod-date">Choose a date:</label>
+    <input type="date" id="apod-date" max="">
+    <div id="apod"></div>
+    <h2>Recent APOD Entries</h2>
+    <div id="rss-feed">
+      <script src="//rss.bloople.net/?url=https%3A%2F%2Fapod.com%2Ffeed.rss&showtitle=false&type=js"></script>
+    </div>
+  </div>
 
   <script>
     const apiKey = "DEMO_KEY";
-    const container = document.getElementById("apod-container");
+    const dateInput = document.getElementById("apod-date");
+    const apodContainer = document.getElementById("apod");
 
-    const dates = [
-      "2025-08-28",
-      "2025-08-27",
-      "2025-08-26"
-    ];
+    function fetchAPOD(date = "") {
+      let url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
+      if (date) {
+        url += `&date=${date}`;
+      }
 
-    dates.forEach(date => {
-      fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`)
+      fetch(url)
         .then(response => response.json())
         .then(data => {
-          const card = document.createElement("div");
-          card.className = "apod-card";
-          card.innerHTML = `
+          apodContainer.innerHTML = `
             <h2>${data.title}</h2>
             ${data.media_type === "image" ? 
               `<img src="${data.url}" alt="${data.title}">` : 
@@ -79,11 +64,24 @@
             <p>${data.explanation}</p>
             <p><a href="${data.hdurl || data.url}" target="_blank">View Full Image</a></p>
           `;
-          container.appendChild(card);
         })
         .catch(error => {
+          apodContainer.innerHTML = "<p>Failed to load APOD.</p>";
           console.error("Error fetching APOD:", error);
         });
+    }
+
+    // Set max date to today
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.max = today;
+    dateInput.value = today;
+
+    // Load today's APOD on page load
+    fetchAPOD(today);
+
+    // Load APOD for selected date
+    dateInput.addEventListener("change", () => {
+      fetchAPOD(dateInput.value);
     });
   </script>
 </body>
