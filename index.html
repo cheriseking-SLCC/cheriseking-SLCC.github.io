@@ -10,65 +10,78 @@
       margin: 0;
       padding: 20px;
     }
-    .apod-container {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      max-width: 900px;
-      margin: auto;
+    h1 {
+      text-align: center;
     }
-    .apod {
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .apod-card {
       background: white;
-      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 30%;
+      box-sizing: border-box;
     }
-    img, iframe {
+    .apod-card img, .apod-card iframe {
       max-width: 100%;
-      height: auto;
-      margin-top: 20px;
+      border-radius: 4px;
     }
-    h2 {
-      margin-bottom: 10px;
+    .apod-card h2 {
+      font-size: 1.1em;
+      margin: 10px 0;
+    }
+    .apod-card p {
+      font-size: 0.9em;
+      text-align: justify;
+    }
+    @media (max-width: 900px) {
+      .apod-card {
+        width: 45%;
+      }
+    }
+    @media (max-width: 600px) {
+      .apod-card {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1 style="text-align:center;">NASA Astronomy Picture of the Day</h1>
-  <div class="apod-container" id="apod-container"></div>
+  <h1>NASA Astronomy Picture of the Day</h1>
+  <div class="container" id="apod-container"></div>
 
   <script>
     const apiKey = "DEMO_KEY";
     const container = document.getElementById("apod-container");
 
-    const dates = [];
-    for (let i = 0; i < 3; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      dates.push(date.toISOString().split('T')[0]);
-    }
+    const dates = [
+      "2025-08-28",
+      "2025-08-27",
+      "2025-08-26"
+    ];
 
     dates.forEach(date => {
       fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`)
         .then(response => response.json())
         .then(data => {
-          const apodDiv = document.createElement("div");
-          apodDiv.className = "apod";
-          apodDiv.innerHTML = `
-            <h2>${data.title} (${data.date})</h2>
+          const card = document.createElement("div");
+          card.className = "apod-card";
+          card.innerHTML = `
+            <h2>${data.title}</h2>
             ${data.media_type === "image" ? 
               `<img src="${data.url}" alt="${data.title}">` : 
               `<iframe src="${data.url}" frameborder="0" allowfullscreen></iframe>`}
             <p>${data.explanation}</p>
             <p><a href="${data.hdurl || data.url}" target="_blank">View Full Image</a></p>
           `;
-          container.appendChild(apodDiv);
+          container.appendChild(card);
         })
         .catch(error => {
-          const errorDiv = document.createElement("div");
-          errorDiv.className = "apod";
-          errorDiv.innerHTML = `<p>Failed to load APOD for ${date}</p>`;
-          container.appendChild(errorDiv);
           console.error("Error fetching APOD:", error);
         });
     });
