@@ -90,13 +90,6 @@
           container.appendChild(errorDiv);
         });
     });
-const container = document.getElementById("apod");
-const today = new Date();
-const dates = [0, 1, 2].map(offset => {
-  const d = new Date(today);
-  d.setDate(d.getDate() - offset);
-  return d.toISOString().split("T")[0];
-});
 
 function formatDate(dateStr) {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
