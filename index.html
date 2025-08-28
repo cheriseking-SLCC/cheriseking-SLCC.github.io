@@ -24,7 +24,7 @@
       margin: auto;
     }
     input[type="date"] {
-      padding: 5px;
+      padding: 8px;
       font-size: 16px;
       margin-top: 10px;
     }
@@ -36,23 +36,20 @@
     <label for="apod-date">Choose a date:</label>
     <input type="date" id="apod-date" max="">
     <div id="apod"></div>
-    <h2>Recent APOD Entries</h2>
-    <div id="rss-feed">
-      <script src="//rss.bloople.net/?url=https%3A%2F%2Fapod.com%2Ffeed.rss&showtitle=false&type=js"></script>
-    </div>
   </div>
 
   <script>
-    const apiKey = "DEMO_KEY";
+    const apiKey = "DEMO_KEY"; // Replace with your own NASA API key if needed
     const dateInput = document.getElementById("apod-date");
     const apodContainer = document.getElementById("apod");
 
-    function fetchAPOD(date = "") {
-      let url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
-      if (date) {
-        url += `&date=${date}`;
-      }
+    // Set max date to today
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.max = today;
+    dateInput.value = today;
 
+    function fetchAPOD(date) {
+      const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`;
       fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -71,15 +68,10 @@
         });
     }
 
-    // Set max date to today
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.max = today;
-    dateInput.value = today;
-
-    // Load today's APOD on page load
+    // Initial fetch for today's APOD
     fetchAPOD(today);
 
-    // Load APOD for selected date
+    // Fetch APOD when date changes
     dateInput.addEventListener("change", () => {
       fetchAPOD(dateInput.value);
     });
