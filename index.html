@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +40,7 @@
   </div>
 
   <script>
-    const apiKey = "30gPSiCApDDnILcqeuhTcbYNwYz9otTGcPwr0uLZ"; // Replace with your own NASA API key if needed
+    const apiKey = "DEMO_KEY"; // Replace with your own NASA API key if needed
     const dateInput = document.getElementById("apod-date");
     const apodContainer = document.getElementById("apod");
 
@@ -71,7 +72,7 @@
     // Initial fetch for today's APOD
     fetchAPOD(today);
 
-    // Fetch APOD when date changes
+    // Fetch APOD for selected date
     dateInput.addEventListener("change", () => {
       fetchAPOD(dateInput.value);
     });
